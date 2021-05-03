@@ -46,22 +46,15 @@ function sendEmail() {
   })
   .then(response => response.json())
   .then(results => {
+    //error handling for null recipients
     if(results.message){
       load_mailbox('sent');
       alert(results.message)
+      
     }
     else{
       alert(results.error)
-      return false;
     }     
   });
-  //   if(results.message){
-  //     alert(results[error])
-  //   }
-
-  // })
-  // //error handling 
-  
-  // // Send user to Sent mailbox when done with data.
-  // load_mailbox('sent');
+  return false;
 }  
