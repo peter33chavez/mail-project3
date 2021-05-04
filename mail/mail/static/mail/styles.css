@@ -1,3 +1,37 @@
+*{
+    list-style-type: none ;
+    margin: 0;
+    padding: 0;
+}
+
+
 textarea {
     min-height: 400px;
 }
+#mail-container{
+    border-style: solid;
+    border-width: thin;
+    border-color: #E5E5E5;
+}
+.detail-container{
+    margin: 5px 0 5px 10px;
+}
+.mail-from{
+    font-size: 18px;
+}
+.mail-subject{
+    font-size: 17px;
+    font-weight: 500;
+}
+.mail-body{
+    font-size: 15px;
+    color: rgb(117, 117, 117); 
+}
+.time-container{
+    margin: 5px 15px 0 auto;
+}
+.mail-time{
+    font-size: 14px;
+    color: rgb(117, 117, 117); 
+}
+

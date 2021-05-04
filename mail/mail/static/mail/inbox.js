@@ -27,11 +27,14 @@ function compose_email() {
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
+  document.querySelector('#mail-container').style.display = 'none';
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
-
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  //query mail
+  get_mail(mailbox);
+  
 }
 
 function sendEmail() {
@@ -57,4 +60,45 @@ function sendEmail() {
     }     
   });
   return false;
-}  
+}
+
+function get_mail(mailbox){
+
+  const mailContainer = document.querySelector('#mail-container');
+  //query api for mail
+  fetch(`/emails/${mailbox}`)
+  .then(response => response.json())
+  .then(data => {
+    //error handling for mailbox
+    if(data.error){
+      mailContainer.innerHTML = `<h5>${data.error}</h5>`;
+    }
+    else{
+      data.forEach( allMail => {
+        //for (const mail of Object.keys(allMail)){
+          console.log(allMail.subject)
+          mailContainer.style.display = 'flex';
+          mailContainer.innerHTML = 
+          `<ul class='detail-container'>
+            <li class="mail-from">
+              <strong>${allMail.sender}</strong>
+            </li>
+            <li class="mail-subject">${allMail.subject}</li>
+            <li class="mail-body">
+            <p>${allMail.body}</p>
+            </li>  
+          </ul>
+          <div class="time-container">
+            <p class="mail-time">${allMail.timestamp}</p>
+          </div>`;
+          if(allMail.read === false){
+            mailContainer.style.background = '#E4E4E4'
+          }
+          else{
+            mailContainer.style.background = '#FFFFFF'
+          }
+        //};
+      });
+    };
+  });
+};
