@@ -15,6 +15,7 @@ function compose_email() {
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#mail-container').style.display = 'none';
 
   // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
@@ -27,11 +28,13 @@ function compose_email() {
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
-  document.querySelector('#mail-container').style.display = 'none';
+  document.querySelector('#mail-container').innerHTML = "";
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
   //query mail
   get_mail(mailbox);
   
@@ -49,6 +52,7 @@ function sendEmail() {
   })
   .then(response => response.json())
   .then(results => {
+
     //error handling for null recipients
     if(results.message){
       load_mailbox('sent');
@@ -64,41 +68,74 @@ function sendEmail() {
 
 function get_mail(mailbox){
 
+  // target container 
   const mailContainer = document.querySelector('#mail-container');
+
   //query api for mail
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
-  .then(data => {
+  .then(emails => {
+
     //error handling for mailbox
-    if(data.error){
-      mailContainer.innerHTML = `<h5>${data.error}</h5>`;
+    if(emails.error){
+      mailContainer.innerHTML = `<h5>${emails.error}</h5>`;
     }
     else{
-      data.forEach( allMail => {
-        //for (const mail of Object.keys(allMail)){
-          console.log(allMail.subject)
-          mailContainer.style.display = 'flex';
-          mailContainer.innerHTML = 
-          `<ul class='detail-container'>
-            <li class="mail-from">
-              <strong>${allMail.sender}</strong>
-            </li>
-            <li class="mail-subject">${allMail.subject}</li>
-            <li class="mail-body">
-            <p>${allMail.body}</p>
-            </li>  
-          </ul>
-          <div class="time-container">
-            <p class="mail-time">${allMail.timestamp}</p>
-          </div>`;
-          if(allMail.read === false){
-            mailContainer.style.background = '#E4E4E4'
-          }
-          else{
-            mailContainer.style.background = '#FFFFFF'
-          }
-        //};
-      });
-    };
-  });
+      mailContainer.style.display = 'block';
+      emails.forEach( email => mail_cards(email, mailbox));
+    }
+  });  
 };
+
+function mail_cards(email, mailbox){
+
+  // grab/create all containers
+  const mailContainer = document.querySelector('#mail-container');
+  const cardContainer = document.createElement('div');
+  cardContainer.className = 'card-container';
+  const detailContainer = document.createElement('div');
+  detailContainer.className = 'detail-container';
+  const timeContainer = document.createElement('div');
+  timeContainer.className = 'time-container';
+
+  //add the sender/recipients
+  const recipient = document.createElement('div');
+  recipient.className = 'mail-from';
+
+  if(mailbox === 'inbox'){
+    recipient.innerHTML = email.sender;
+  }
+  else{
+      recipient.innerHTML = email.recipients[0];
+    }
+
+  //add the subject
+  const subject = document.createElement('div')
+  subject.className = 'mail-subject';
+  subject.innerHTML = email.subject;
+
+  //add the body 
+  const body = document.createElement('div')
+  body.className = 'mail-body';
+  body.innerHTML = email.body;
+
+  //add the timestamp
+  const timestamp = document.createElement('div')
+  timestamp.className = 'mail-time';
+  timestamp.innerHTML = email.timestamp;
+    
+  //add the all the details to a card
+  detailContainer.append(recipient, subject, body);
+  timeContainer.append(timestamp);
+  cardContainer.append(detailContainer, timeContainer);
+  mailContainer.append(cardContainer);
+
+  //read option
+  if(email.read === false){
+    cardContainer.style.background = '#FFFFFF';
+  }
+  else{
+    cardContainer.style.background = '#E4E4E4';
+  }
+};
+
