@@ -19,6 +19,14 @@ textarea {
     cursor: pointer;
     
 }
+.email-header{
+    margin-bottom: 10px;
+    border-bottom: solid;
+    border-width: thin;
+    border-color: #E5E5E5;
+    padding: 5px;
+    display: flex;
+}
 .detail-container{
     margin: 5px 0 5px 10px;
 }
@@ -44,3 +52,20 @@ textarea {
     color: rgb(117, 117, 117); 
 }
 
+.view-subject{
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.archive-btn{
+    background:rgb(48, 48, 48);
+    color: rgb(255, 255, 255);
+    position: relative;
+    top: 20px;
+    left: 70px; 
+}
+
+.archive-btn:hover{
+    background:#539BFF; 
+    color: rgb(48, 48, 48);    
+}

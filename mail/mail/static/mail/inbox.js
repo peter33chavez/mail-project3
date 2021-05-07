@@ -54,7 +54,6 @@ function sendEmail() {
   })
   .then(response => response.json())
   .then(results => {
-
     //error handling for null recipients
     if(results.message){
       load_mailbox('sent');
@@ -100,35 +99,47 @@ function mail_cards(email, mailbox){
   const timeContainer = document.createElement('div');
   timeContainer.className = 'time-container';
 
+
+  //add the timestamp
+  const timestamp = document.createElement('div');
+  timestamp.className = 'mail-time';
+  timestamp.innerHTML = email.timestamp;
+
   //add the sender/recipients
   const recipient = document.createElement('div');
   recipient.className = 'mail-from';
 
   if(mailbox === 'inbox'){
     recipient.innerHTML = email.sender;
+
+    //archive btn
+    const archive = document.createElement('button');
+    archive.className = 'archive-btn btn btn-sm btn-outline-primary"';
+    archive.innerHTML = 'Archive';
+    archive.value = email.archived;
+    archive.addEventListener('click', function(){
+      archived(archiveClick);
+    });
+
+    timeContainer.append(timestamp, archive);
   }
   else{
-      recipient.innerHTML = email.recipients[0];
+    recipient.innerHTML = email.recipients[0];
+    timeContainer.append(timestamp);
     }
 
   //add the subject
-  const subject = document.createElement('div')
+  const subject = document.createElement('div');
   subject.className = 'mail-subject';
   subject.innerHTML = email.subject;
 
   //add the body 
-  const body = document.createElement('div')
+  const body = document.createElement('div');
   body.className = 'mail-body';
   body.innerHTML = email.body;
 
-  //add the timestamp
-  const timestamp = document.createElement('div')
-  timestamp.className = 'mail-time';
-  timestamp.innerHTML = email.timestamp;
-    
   //add the all the details to a card
   detailContainer.append(recipient, subject, body);
-  timeContainer.append(timestamp);
   cardContainer.append(detailContainer, timeContainer);
   mailContainer.append(cardContainer);
 
@@ -162,50 +173,66 @@ function viewEmail(email_id){
       fetch(`/emails/${email_id}`, {
         method: 'PUT',
         body: JSON.stringify({
-          archived: true
+          read: true
         })
       })
 
       //create containers
-      var createDiv = document.createElement('div');
-      var createFrag = document.createDocumentFragment('div');
-      var headerContainer = document.createDocumentFragment('header');
-      var recipientsContainer = createFrag;
-      var timeContainer = createFrag;
-      var bodyContainer = createFrag;
-      const sender = createDiv;
-      const recipients = createDiv;
-      const time = createDiv; 
-      const subject = createDiv;
-      const body = createDiv;
-      
-      //give styling to all created containers
-      headerContainer.className = 'card-container';
+      const headerContainer = document.createElement('header');
+      headerContainer.className = 'email-header';
+
+      const recipientsContainer = document.createElement('div');
       recipientsContainer.className = 'detail-container';
+
+      const timeContainer = document.createElement('div');
       timeContainer.className = 'time-container';
+
+      const bodyContainer = document.createElement('div');
       bodyContainer.className = 'body-container';
+     
+
+      //recipientsContainer
+      //sender
+      const sender = document.createElement('div');
       sender.className = 'mail-from';
-      recipients.className = 'mail-to';
-      time.className = 'mail-time';
-      subject.className = 'view-subject';
-      body.className = 'view-body';
-
-      //fill containers with data
       sender.innerHTML = email.sender;
-      recipients.innerHTML = email.recipients;
-      time.innerHTML = email.timestamp;
-      subject.innerHTML = email.subject;
-      body.innerHTML = email.body;
-
-      //add div to the styled container
+      //recipients
+      const recipients = document.createElement('div');
+      recipients.className = 'mail-to';
+      recipients.innerHTML = `To: ${email.recipients}`;
+      //add to container
       recipientsContainer.append(sender, recipients);
+      
+      //timeContainer
+      //time
+      const time = document.createElement('div');
+      time.className = 'mail-time'
+      time.innerHTML = email.timestamp;
+      //add to container
       timeContainer.append(time);
 
-      bodyContainer.append(subject, body);
+      //add detail containers to header
       headerContainer.append(recipientsContainer, timeContainer);
+      
+      //bodyContainer
+      //subject
+      const subject = document.createElement('div');
+      subject.className = 'view-subject';
+      subject.innerHTML = email.subject;
+      //body
+      const body = document.createElement('div');
+      body.className = 'view-body';
+      body.innerHTML = email.body;
+      //add to container
+      bodyContainer.append(subject, body);
+
 
       //add everything to the view page
       viewEmail.append(headerContainer, bodyContainer);
     });
 }
+
+function archived(archiveClick){
+  console.log(archiveClick);
+};
 
