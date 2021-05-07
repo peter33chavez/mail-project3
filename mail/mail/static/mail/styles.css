@@ -16,6 +16,8 @@ textarea {
     border-radius: 5px;
     padding: 5px;
     display: flex;
+    cursor: pointer;
+    
 }
 .detail-container{
     margin: 5px 0 5px 10px;

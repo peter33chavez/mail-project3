@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function compose_email() {
 
   // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#view-email').style.display = 'none';
+  document.querySelector('#view-title').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
   document.querySelector('#mail-container').style.display = 'none';
 
@@ -28,12 +29,13 @@ function compose_email() {
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
+  document.querySelector('#view-email').style.display = 'none';
   document.querySelector('#mail-container').innerHTML = "";
-  document.querySelector('#emails-view').style.display = 'block';
+  document.querySelector('#view-title').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  document.querySelector('#view-title').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
   //query mail
   get_mail(mailbox);
@@ -137,5 +139,73 @@ function mail_cards(email, mailbox){
   else{
     cardContainer.style.background = '#E4E4E4';
   }
+
+  // add handler to view the selected email.
+  cardContainer.addEventListener('click', function(){
+    viewEmail(email.id);
+  });
+  
 };
+
+function viewEmail(email_id){
+  const viewEmail = document.querySelector('#view-email');
+  document.querySelector('#view-title').style.display = 'none';
+  document.querySelector('#mail-container').style.display = 'none';
+  document.querySelector('#view-email').innerHTML = "";
+  viewEmail.style.display = 'block';
+
+    fetch(`/emails/${email_id}`)
+    .then(response => response.json())
+    .then(email => {
+
+      //mark the email as read
+      fetch(`/emails/${email_id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          archived: true
+        })
+      })
+
+      //create containers
+      var createDiv = document.createElement('div');
+      var createFrag = document.createDocumentFragment('div');
+      var headerContainer = document.createDocumentFragment('header');
+      var recipientsContainer = createFrag;
+      var timeContainer = createFrag;
+      var bodyContainer = createFrag;
+      const sender = createDiv;
+      const recipients = createDiv;
+      const time = createDiv; 
+      const subject = createDiv;
+      const body = createDiv;
+      
+      //give styling to all created containers
+      headerContainer.className = 'card-container';
+      recipientsContainer.className = 'detail-container';
+      timeContainer.className = 'time-container';
+      bodyContainer.className = 'body-container';
+      sender.className = 'mail-from';
+      recipients.className = 'mail-to';
+      time.className = 'mail-time';
+      subject.className = 'view-subject';
+      body.className = 'view-body';
+
+      //fill containers with data
+      sender.innerHTML = email.sender;
+      recipients.innerHTML = email.recipients;
+      time.innerHTML = email.timestamp;
+      subject.innerHTML = email.subject;
+      body.innerHTML = email.body;
+
+      //add div to the styled container
+      recipientsContainer.append(sender, recipients);
+      timeContainer.append(time);
+
+      bodyContainer.append(subject, body);
+      headerContainer.append(recipientsContainer, timeContainer);
+
+      //add everything to the view page
+      viewEmail.append(headerContainer, bodyContainer);
+    });
+}
 
