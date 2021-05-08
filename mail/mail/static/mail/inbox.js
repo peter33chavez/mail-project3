@@ -295,7 +295,8 @@ function reply(email){
   else{
     document.querySelector('#compose-subject').value = `Re:${email.subject}`;
   }
-  document.querySelector('#compose-body').value = '';
+  document.querySelector('#compose-body').value = `
+  On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
 
   document.querySelector('#compose-form').onsubmit = sendEmail;
 };
