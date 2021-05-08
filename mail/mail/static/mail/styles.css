@@ -48,6 +48,14 @@ textarea {
     margin: 5px 15px 0 auto;
 
 }
+.action-container{
+    border-top: solid;
+    border-width: thin;
+    border-color: #E5E5E5;
+    display: flex;
+    flex-direction: row-reverse;
+    margin-top: 30px;
+}
 
 .mail-time{
     font-size: 12px;
@@ -64,5 +72,8 @@ textarea {
     top: 20px;
     left: 70px; 
     z-index: 10;
+}
+.actionBtn{
+    margin: 20px;
 }
 

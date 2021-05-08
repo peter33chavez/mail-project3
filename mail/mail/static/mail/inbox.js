@@ -193,6 +193,9 @@ function viewEmail(email_id, mailbox){
 
       const bodyContainer = document.createElement('div');
       bodyContainer.className = 'body-container';
+
+      const actionContainer = document.createElement('div');
+      actionContainer.className = 'action-container';
      
 
       //recipientsContainer
@@ -222,7 +225,12 @@ function viewEmail(email_id, mailbox){
       //subject
       const subject = document.createElement('div');
       subject.className = 'view-subject';
-      subject.innerHTML = email.subject;
+      if(email.subject === ""){
+        subject.innerHTML = '(No Subject)'
+      }
+      else{
+        subject.innerHTML = email.subject;
+      }
       //body
       const body = document.createElement('div');
       body.className = 'view-body';
@@ -230,19 +238,28 @@ function viewEmail(email_id, mailbox){
       //add to container
       bodyContainer.append(subject, body);
 
+      //add reply btn
+      const replyBtn = document.createElement('button');
+        replyBtn.className = 'actionBtn btn btn-sm btn-outline-primary';
+        replyBtn.innerHTML = 'Reply';
+        actionContainer.append(replyBtn);
+        replyBtn.addEventListener('click', function(){
+          reply(email);
+        });
+      
       //archive btn
       if(mailbox !== 'sent'){
         const archive = document.createElement('button');
-        archive.className = 'archive-btn btn btn-sm';
+        archive.className = 'actionBtn btn btn-sm btn-outline-primary';
         archive.innerHTML = 'Archive';
         archive.value = email.archived;
+        actionContainer.append(archive);
         archive.addEventListener('click', function(){
           archived(email.id, archive);
         });
       }
-
       //add everything to the view page
-      viewEmail.append(headerContainer, bodyContainer);
+      viewEmail.append(headerContainer, bodyContainer, actionContainer);
     });
 }
 
@@ -263,5 +280,23 @@ function archived(email_id, archive){
       })
     })
   }
+};
+
+function reply(email){
+  // Show compose view and hide other view
+  document.querySelector('#view-email').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'block';
+
+  // pre-fill fields
+  document.querySelector('#compose-recipients').value = email.recipients;
+  if(email.subject === ""){
+    document.querySelector('#compose-subject').value = '(No Subject)'
+  }
+  else{
+    document.querySelector('#compose-subject').value = `Re:${email.subject}`;
+  }
+  document.querySelector('#compose-body').value = '';
+
+  document.querySelector('#compose-form').onsubmit = sendEmail;
 };
 
