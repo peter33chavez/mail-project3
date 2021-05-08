@@ -109,16 +109,16 @@ function mail_cards(email, mailbox){
   const recipient = document.createElement('div');
   recipient.className = 'mail-from';
 
-  if(mailbox === 'inbox'){
+  if(mailbox === 'inbox' || mailbox === 'archive'){
     recipient.innerHTML = email.sender;
 
     //archive btn
     const archive = document.createElement('button');
-    archive.className = 'archive-btn btn btn-sm btn-outline-primary"';
+    archive.className = 'archive-btn btn btn-sm btn-outline-primary';
     archive.innerHTML = 'Archive';
     archive.value = email.archived;
     archive.addEventListener('click', function(){
-      archived(archiveClick);
+      archived(email.id, archive);
     });
 
     timeContainer.append(timestamp, archive);
@@ -131,8 +131,12 @@ function mail_cards(email, mailbox){
   //add the subject
   const subject = document.createElement('div');
   subject.className = 'mail-subject';
-  subject.innerHTML = email.subject;
-
+  if(email.subject === ""){
+    subject.innerHTML = '(No Subject)'
+  }
+  else{
+    subject.innerHTML = email.subject;
+  }
   //add the body 
   const body = document.createElement('div');
   body.className = 'mail-body';
@@ -153,12 +157,12 @@ function mail_cards(email, mailbox){
 
   // add handler to view the selected email.
   cardContainer.addEventListener('click', function(){
-    viewEmail(email.id);
+    viewEmail(email.id, mailbox);
   });
   
 };
 
-function viewEmail(email_id){
+function viewEmail(email_id, mailbox){
   const viewEmail = document.querySelector('#view-email');
   document.querySelector('#view-title').style.display = 'none';
   document.querySelector('#mail-container').style.display = 'none';
@@ -226,13 +230,38 @@ function viewEmail(email_id){
       //add to container
       bodyContainer.append(subject, body);
 
+      //archive btn
+      if(mailbox !== 'sent'){
+        const archive = document.createElement('button');
+        archive.className = 'archive-btn btn btn-sm';
+        archive.innerHTML = 'Archive';
+        archive.value = email.archived;
+        archive.addEventListener('click', function(){
+          archived(email.id, archive);
+        });
+      }
 
       //add everything to the view page
       viewEmail.append(headerContainer, bodyContainer);
     });
 }
 
-function archived(archiveClick){
-  console.log(archiveClick);
+function archived(email_id, archive){
+  if(archive.value == 'false'){
+    fetch(`/emails/${email_id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        archived: true
+      })
+    })
+  }
+  else if(archive.value == 'true'){
+    fetch(`/emails/${email_id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        archived: false
+      })
+    })
+  }
 };
 

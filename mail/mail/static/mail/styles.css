@@ -17,6 +17,8 @@ textarea {
     padding: 5px;
     display: flex;
     cursor: pointer;
+    min-height: 96px;
+
     
 }
 .email-header{
@@ -58,14 +60,9 @@ textarea {
 }
 
 .archive-btn{
-    background:rgb(48, 48, 48);
-    color: rgb(255, 255, 255);
     position: relative;
     top: 20px;
     left: 70px; 
+    z-index: 10;
 }
 
-.archive-btn:hover{
-    background:#539BFF; 
-    color: rgb(48, 48, 48);    
-}
