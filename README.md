@@ -6,8 +6,8 @@ Django is used as the backend to handle to API along side the Login/Register acc
 API calls to Django are made in JavaScript to access the users data. 
 Once the Calls have been made the data is converted into Json Objects then displayed on screen within the given tab.
 Similar process is taken with sending the data Via compose, data is sent as a post request to the api to store the data in the SQLite database.
-If a email has been viewed by a user the email will apear in grey and if it has yet to be viewed it will appear in white.
-Funtionality to Archive and Reply are featured on each Email.
+If a email has been viewed by a user the email will appear in grey and if it has yet to be viewed it will appear in white.
+Functionality to Archive and Reply are featured on/in each Email.
 
 ## TOOLS: 
 - JavaScript
@@ -27,6 +27,6 @@ If you choose to not create a User account, dummy account can be used at login.
 ```Email: john@email.com```
 ```Password: password```
 
-If cloning the code all the dependencies are within the ```requirements.txt``` file in the root directory. 
+For cloning the project, all the dependencies are within the ```requirements.txt``` file in the root directory. 
 Once you download all the dependencies, run ``` python manage.py runserver ``` to run on your local host.
 Some users will need to change the run slightly to ```python3 manage.py runserver ``` depending on how you set up python.
